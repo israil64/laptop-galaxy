@@ -1,0 +1,39 @@
+[
+  {
+    "id": 1,
+    "name": "Amit Kumar",
+    "role": "Student, Gaya College",
+    "rating": 5,
+    "text": "Best place in Gaya for laptops. Bought a Dell Latitude for coding. It works perfectly and the battery life is great.",
+    "image": "https://randomuser.me/api/portraits/men/32.jpg",
+    "returning": false,
+    "approved": true
+  },
+  {
+    "id": 2,
+    "name": "Priya Singh",
+    "role": "Freelancer",
+    "rating": 5,
+    "text": "I was skeptical about second-hand laptops, but the condition was like new. Highly recommended for budget buyers.",
+    "image": "https://randomuser.me/api/portraits/women/44.jpg",
+    "returning": true
+  },
+  {
+    "id": 3,
+    "name": "Rahul Verma",
+    "role": "Shop Owner",
+    "rating": 4,
+    "text": "Good service and genuine products. The warranty support is very helpful.",
+    "image": "https://randomuser.me/api/portraits/men/86.jpg",
+    "returning": false
+  },
+  {
+    "id": 4,
+    "name": "Sneha Gupta",
+    "role": "Office Professional",
+    "rating": 5,
+    "text": "This is my second purchase from Laptop Galaxy. They offered me a great exchange value on my old laptop.",
+    "image": "https://randomuser.me/api/portraits/women/68.jpg",
+    "returning": true
+  }
+]

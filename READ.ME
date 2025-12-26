@@ -1,0 +1,36 @@
+# 💻 Laptop Galaxy - Refurbished Laptop Store
+
+A professional, responsive, and frontend-only web application built for **Laptop Galaxy** in Gaya, Bihar. This project displays laptop inventory, specifications, and customer reviews using a clean, modern UI without requiring a complex backend.
+
+![Project Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)
+![Tech Stack](https://img.shields.io/badge/Tech-HTML%20%7C%20Tailwind%20%7C%20JS-blue)
+
+## ✨ Features
+
+*   **Dynamic Inventory:** Products are loaded instantly from a JSON file (`data/inventory.json`).
+*   **Responsive Design:** Fully optimized for Mobile, Tablet, and Desktop using Tailwind CSS.
+*   **Interactive UI:**
+    *   Hover effects for price reveal (Slide-in animation).
+    *   "View Details" Modal popup.
+    *   Active Navigation Bar (Highlights current section on scroll).
+*   **Smart Status Badges:** Automatically labels items as **In Stock**, **Sold Out**, or **Special Offer**.
+*   **WhatsApp Integration:** "Buy Now" buttons auto-generate a WhatsApp message with the specific laptop model and price.
+*   **Customer Reviews:** Dynamic testimonial section loaded from JSON.
+
+---
+
+## 📂 Project Structure
+
+The project is organized for scalability and ease of maintenance:
+
+```text
+/laptop-galaxy
+│
+├── index.html           # Main structure and layout
+├── app.js               # Main logic (Fetch data, render grid, scroll spy)
+│
+├── /data                # "Mock Database"
+│   ├── inventory.json   # Edit this to add/remove laptops
+│   └── reviews.json     # Edit this to add customer reviews
+│
+└── /assets              # (Optional) Images folder

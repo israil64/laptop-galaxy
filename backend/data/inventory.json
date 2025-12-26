@@ -1,0 +1,72 @@
+[
+  {
+    "id": 102,
+    "brand": "HP",
+    "model": "EliteBook 840 G5",
+    "processor": "Intel Core i5 8th Gen",
+    "ram": "See details",
+    "storage": "",
+    "display": "14-inch FHD",
+    "condition": "Good",
+    "price": 1500,
+    "status": "limited",
+    "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?auto=format&fit=crop&w=500&q=60"
+  },
+  {
+    "id": 103,
+    "brand": "Apple",
+    "model": "MacBook Air 2017",
+    "processor": "Intel i5",
+    "ram": "8GB",
+    "storage": "128GB SSD",
+    "display": "13.3 Retina",
+    "condition": "Refurbished",
+    "price": 32000,
+    "status": "sold-out",
+    "image": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&w=500&q=60"
+  },
+  {
+    "id": 1,
+    "model": "Dell Latitude 7490",
+    "processor": "Intel Core i7 8th Gen",
+    "ram": "16GB DDR4",
+    "storage": "512GB SSD",
+    "display": "14 inch FHD Touch",
+    "price": 28500,
+    "status": "available",
+    "image": "https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=600"
+  },
+  {
+    "id": 2,
+    "model": "HP EliteBook 840 G5",
+    "processor": "Intel Core i5 8th Gen",
+    "ram": "8GB DDR4",
+    "storage": "256GB SSD",
+    "display": "14 inch FHD",
+    "price": 24000,
+    "status": "offer",
+    "image": "https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=600"
+  },
+  {
+    "id": 1766683513285,
+    "brand": "Apple M3",
+    "model": "Mac Book M12",
+    "price": 22000,
+    "status": "offer",
+    "processor": "i7 12th Gen 8GB RAM",
+    "ram": "See details",
+    "storage": "",
+    "image": "https://www.digitaltrends.com/wp-content/uploads/2022/10/apple-macbook-pro-14-rear-view-e1666806673134.jpg?p=1"
+  },
+  {
+    "id": 1766728192362,
+    "brand": "dell",
+    "model": "Dell 7989",
+    "price": 28500,
+    "status": "in-stock",
+    "processor": "i5 12th Gen 8Gb RAM",
+    "ram": "See details",
+    "storage": "",
+    "image": "https://th.bing.com/th/id/OSK.lVBWWszIiDYH7waRA-uCi_axmoHg_Sppb0diSDAFBLo?w=130&h=100&c=8&o=6&dpr=1.3&pid=SANGAM"
+  }
+]

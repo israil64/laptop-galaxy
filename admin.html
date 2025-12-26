@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel - Laptop Galaxy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+    <!-- Sidebar / Nav -->
+    <div class="flex">
+        <aside class="w-64 bg-slate-800 text-white min-h-screen hidden md:block p-6">
+            <h2 class="text-2xl font-bold mb-8 text-blue-400">Admin Panel</h2>
+            <nav class="space-y-4">
+                <button onclick="showSection('inventory')"
+                    class="w-full text-left py-2 px-4 bg-slate-700 rounded text-blue-300 font-bold hover:bg-slate-600 transition">
+                    Inventory
+                </button>
+                <button onclick="showSection('messages')"
+                    class="w-full text-left py-2 px-4 rounded text-gray-400 hover:bg-slate-700 hover:text-white transition">
+                    Messages
+                </button>
+                
+                <a href="index.html" class="block py-2 px-4 mt-8 text-sm text-gray-500 hover:text-white"><i
+                        class="fas fa-arrow-left"></i> Back to Website
+                </a>
+                
+            </nav>
+            <!-- <nav class="space-y-4">
+                <a href="#" class="block py-2 px-4 bg-slate-700 rounded text-blue-300 font-bold">Inventory</a>
+                <a href="#" class="block py-2 px-4 hover:bg-slate-700 rounded text-gray-400">Reviews (Coming Soon)</a>
+                <a href="#" class="block py-2 px-4 hover:bg-slate-700 rounded text-gray-400">Messages (Coming Soon)</a>
+                <a href="index.html" class="block py-2 px-4 mt-8 text-sm text-gray-500 hover:text-white"><i class="fas fa-arrow-left"></i> Back to Website</a>
+            </nav> -->
+        </aside>
+
+        <!-- Main Content -->
+
+        <main class="flex-1 p-8">
+            <!-- INVENTORY SECTION (Wrap your existing inventory code in this div) -->
+            <div id="inventory-section">
+                <div class="flex justify-between items-center mb-8">
+                    <h1 class="text-3xl font-bold text-slate-800">
+                        Inventory Management
+                    </h1>
+                    <button onclick="openForm()"
+                        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-bold shadow">
+                        <i class="fas fa-plus"></i> Add New Laptop
+                    </button>
+                </div>
+                <!-- Your Table Code is here... -->
+                <div class="bg-white rounded-xl shadow overflow-hidden">
+                    <!-- ... existing table code ... -->
+                    <table class="w-full text-left">
+                        <!-- ... header ... -->
+                        <tbody id="admin-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MESSAGES SECTION (New Code) -->
+            <div id="messages-section" class="hidden">
+                <h1 class="text-3xl font-bold text-slate-800 mb-8">
+                    Customer Inquiries
+                </h1>
+
+                <div class="bg-white rounded-xl shadow overflow-hidden">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-200 text-slate-700">
+                            <tr>
+                                <th class="p-3">Date</th>
+                                <th class="p-3">Name</th>
+                                <th class="p-3">Email</th>
+                                <th class="p-3">Mobile No.</th>
+                                <th class="p-3">Message</th>
+                                <th class="p-3">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="messages-table-body" class="divide-y divide-gray-100">
+                            <!-- Messages will appear here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- REVIEWS SECTION -->
+            <div id="reviews-section" class="hidden">
+                <h1 class="text-3xl font-bold text-slate-800 mb-8">
+                    Customer Reviews
+                </h1>
+
+                <div class="bg-white rounded-xl shadow overflow-hidden">
+                    <table class="w-full text-left">
+                        <thead class="bg-slate-200 text-slate-700">
+                            <tr>
+                                <th class="p-4">Rating</th>
+                                <th class="p-4">Customer</th>
+                                <th class="p-4">Review</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reviews-table-body" class="divide-y divide-gray-100">
+                            <!-- Reviews injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ADD / EDIT MODAL FORM -->
+    <div id="laptopFormModal"
+        class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 backdrop-blur-sm">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-lg p-6 relative">
+            <button onclick="closeForm()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-xl">
+                &times;
+            </button>
+
+            <h2 id="formTitle" class="text-2xl font-bold mb-6 text-slate-800">
+                Add New Laptop
+            </h2>
+
+            <form id="inventoryForm" class="space-y-4">
+                <input type="hidden" id="laptopId" />
+                <!-- Hidden ID for Editing -->
+
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" id="brand" placeholder="Brand (e.g. Dell)" class="border p-2 rounded w-full"
+                        required />
+                    <input type="text" id="model" placeholder="Model Name" class="border p-2 rounded w-full" required />
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="number" id="price" placeholder="Price (₹)" class="border p-2 rounded w-full"
+                        required />
+                    <select id="status" class="border p-2 rounded w-full">
+                        <option value="in-stock">In Stock</option>
+                        <option value="limited">Limited Stock</option>
+                        <option value="sold">Sold Out</option>
+                        <option value="offer">Special Offer</option>
+                    </select>
+                </div>
+
+                <input type="text" id="specs" placeholder="Specs (e.g. i5 8th Gen, 8GB RAM)"
+                    class="border p-2 rounded w-full" required />
+                <input type="text" id="image" placeholder="Image URL (Link to image)" class="border p-2 rounded w-full"
+                    required />
+
+                <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition">
+                    Save Laptop
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        const API_URL = "http://localhost:3000/api/laptops";
+        let isEditing = false;
+
+        // 1. Load Data on Start
+        document.addEventListener("DOMContentLoaded", fetchLaptops);
+
+        async function fetchLaptops() {
+            const res = await fetch(API_URL);
+            const laptops = await res.json();
+            const tbody = document.getElementById("admin-table-body");
+
+            tbody.innerHTML = laptops
+                .map(
+                    (laptop) => `
+                      <tr class="hover:bg-slate-50">
+                          <td class="p-4"><img src="${laptop.image
+                        }" class="w-12 h-12 object-cover rounded"></td>
+                          <td class="p-4 font-bold">${laptop.brand} ${laptop.model
+                        }</td>
+                          <td class="p-4">₹${laptop.price}</td>
+                          <td class="p-4">
+                              <span class="px-2 py-1 rounded text-xs font-bold
+                              ${laptop.status === "in-stock"
+                            ? "bg-green-100 text-green-700"
+                            : laptop.status === "sold"
+                                ? "bg-red-100 text-red-700"
+                                : "bg-orange-100 text-orange-700"
+                        }">
+                                  ${laptop.status.toUpperCase()}
+                              </span>
+                          </td>
+                          <td class="p-4 text-center space-x-2">
+                              <button onclick='editLaptop(${JSON.stringify(
+                            laptop
+                        )})' class="text-blue-600 hover:text-blue-800"><i class="fas fa-edit"></i></button>
+                              <button onclick="deleteLaptop(${laptop.id
+                        })" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
+                          </td>
+                      </tr>
+                  `
+                )
+                .join("");
+        }
+
+        // 2. Handle Form Submit (Add or Update)
+        document
+            .getElementById("inventoryForm")
+            .addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const laptopData = {
+                    brand: document.getElementById("brand").value,
+                    model: document.getElementById("model").value,
+                    price: Number(document.getElementById("price").value),
+                    status: document.getElementById("status").value,
+                    // Combine specs into simple string or object as preferred. Here simple for beginner:
+                    processor: document.getElementById("specs").value,
+                    ram: "See details", // keeping simple for now
+                    storage: "",
+                    image: document.getElementById("image").value,
+                };
+
+                const id = document.getElementById("laptopId").value;
+
+                if (isEditing) {
+                    // UPDATE Existing
+                    await fetch(`${API_URL}/${id}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(laptopData),
+                    });
+                } else {
+                    // CREATE New
+                    await fetch(API_URL, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(laptopData),
+                    });
+                }
+
+                closeForm();
+                fetchLaptops(); // Refresh table
+            });
+
+        // 3. Delete Logic
+        async function deleteLaptop(id) {
+            if (confirm("Are you sure you want to delete this laptop?")) {
+                await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+                fetchLaptops();
+            }
+        }
+
+        // 4. Helper Functions (Open/Close Modal)
+        function openForm() {
+            isEditing = false;
+            document.getElementById("inventoryForm").reset();
+            document.getElementById("formTitle").innerText = "Add New Laptop";
+            document.getElementById("laptopFormModal").classList.remove("hidden");
+        }
+
+        window.editLaptop = function (laptop) {
+            isEditing = true;
+            document.getElementById("laptopId").value = laptop.id;
+            document.getElementById("brand").value = laptop.brand;
+            document.getElementById("model").value = laptop.model;
+            document.getElementById("price").value = laptop.price;
+            document.getElementById("status").value = laptop.status;
+            document.getElementById("specs").value = laptop.processor || ""; // Simplified spec loading
+            document.getElementById("image").value = laptop.image;
+
+            document.getElementById("formTitle").innerText = "Edit Laptop";
+            document.getElementById("laptopFormModal").classList.remove("hidden");
+        };
+
+        function closeForm() {
+            document.getElementById("laptopFormModal").classList.add("hidden");
+        }
+
+        // --- NEW: MESSAGE LOGIC ---
+
+        // 1. Switch Tabs
+        function showSection(sectionId) {
+            // Hide all sections
+            document.getElementById('inventory-section').classList.add('hidden');
+            document.getElementById('messages-section').classList.add('hidden');
+            document.getElementById('reviews-section').classList.add('hidden');
+
+            // Show selected
+            document.getElementById(sectionId + '-section').classList.remove('hidden');
+
+            // Fetch Data based on section
+            if (sectionId === 'messages') fetchMessages();
+            if (sectionId === 'reviews') fetchReviews();
+            if (sectionId === 'inventory') fetchLaptops();
+        }
+
+        // --- REVIEWS LOGIC ---
+
+        async function fetchReviews() {
+            const res = await fetch('http://localhost:3000/api/reviews');
+            const reviews = await res.json();
+            const tbody = document.getElementById('reviews-table-body');
+
+            if (reviews.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-gray-500">No reviews yet.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = reviews.map(r => `
+        <tr class="hover:bg-slate-50">
+            <td class="p-4 text-yellow-500 font-bold">${r.rating} <i class="fas fa-star"></i></td>
+            <td class="p-4">
+                <div class="font-bold text-slate-800">${r.name}</div>
+                <div class="text-xs text-slate-500">${r.role || 'Customer'}</div>
+            </td>
+            <td class="p-4 text-sm text-gray-600 max-w-xs">${r.text}</td>
+            <td class="p-4">
+                ${r.approved === true
+                    ? '<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Live</span>'
+                    : '<span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs font-bold">Hidden</span>'}
+            </td>
+            <td class="p-4 text-center space-x-2">
+                <!-- Toggle Button -->
+                <button onclick="toggleReviewStatus(${r.id}, ${r.approved})" 
+                        class="px-3 py-1 rounded text-xs font-bold text-white transition 
+                        ${r.approved === true ? 'bg-orange-500 hover:bg-orange-600' : 'bg-green-600 hover:bg-green-700'}">
+                    ${r.approved === true ? 'Hide' : 'Approve'}
+                </button>
+                
+                <!-- Delete Button -->
+                <button onclick="deleteReview(${r.id})" class="text-red-500 hover:text-red-700 p-2">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+        }
+
+        // Toggle: Approve or Hide
+        async function toggleReviewStatus(id, currentStatus) {
+            // If it is true, make it false. If false/undefined, make it true.
+            const newStatus = !currentStatus;
+
+            await fetch(`http://localhost:3000/api/reviews/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ approved: newStatus })
+            });
+
+            fetchReviews(); // Refresh list
+        }
+
+        // Delete Review
+        async function deleteReview(id) {
+            if (confirm("Permanently delete this review?")) {
+                await fetch(`http://localhost:3000/api/reviews/${id}`, { method: 'DELETE' });
+                fetchReviews();
+            }
+        }
+
+        // Hide all
+        document.getElementById("inventory-section").classList.add("hidden");
+        document.getElementById("messages-section").classList.add("hidden");
+
+        // Show selected
+        document
+            .getElementById(sectionId + "-section")
+            .classList.remove("hidden");
+
+        // If Messages selected, fetch data
+        if (sectionId === "messages") {
+            fetchMessages();
+        }
+
+
+        // 2. Fetch Messages
+        async function fetchMessages() {
+            const res = await fetch("http://localhost:3000/api/messages");
+            const messages = await res.json();
+            const tbody = document.getElementById("messages-table-body");
+
+            if (messages.length === 0) {
+                tbody.innerHTML =
+                    '<tr><td colspan="5" class="p-4 text-center text-gray-500">No messages yet.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = messages
+                .map(
+                    (msg) => `
+              <tr class="hover:bg-slate-50">
+                  <td class="p-4 text-sm text-gray-500">${msg.date}</td>
+                  <td class="p-4 font-bold">${msg.name}</td>
+                  <td class="p-4 text-blue-600"><a href="mailto:${msg.email}">${msg.email}</a></td>
+                  <td class="p-4 font-bold">${msg.mobile}</td>
+                  <td class="p-4 text-gray-700">${msg.message}</td>
+                  <td class="p-4 text-center">
+                      <button onclick="deleteMessage(${msg.id})" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded hover:bg-red-100">
+                          <i class="fas fa-trash"></i>
+                      </button>
+                  </td>
+              </tr>
+          `
+                )
+                .join("");
+        }
+
+        // 3. Delete Message
+        async function deleteMessage(id) {
+            if (confirm("Delete this message?")) {
+                await fetch(`http://localhost:3000/api/messages/${id}`, {
+                    method: "DELETE",
+                });
+                fetchMessages(); // Refresh list
+            }
+        }
+
+    </script>
+</body>
+
+</html>

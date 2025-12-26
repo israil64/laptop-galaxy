@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Laptop Galaxy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body class="bg-gray-800 text-slate-800">
+
+    <!-- Simple Navbar -->
+    <nav class="bg-white shadow-md p-4 mb-8">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-blue-800">Laptop Galaxy</a>
+            <a href="index.html" class="text-blue-600 hover:underline">Back to Home</a>
+        </div>
+    </nav>
+
+    <!-- Contact Form Section -->
+    <div class="container mx-auto px-6 max-w-2xl">
+        <div class="min-h-screen bg-gray-800 py-6 flex flex-col justify-center sm:py-12">
+            <div class="relative py-3 sm:max-w-xl sm:mx-auto">
+                <div
+                    class="absolute inset-0 bg-gradient-to-r from-indigo-700 to-purple-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl">
+                </div>
+                <div class="text-white relative px-4 py-10 bg-indigo-400 shadow-lg sm:rounded-3xl sm:p-20">
+
+                    <div class="text-center pb-6">
+                        <h1 class="text-3xl">Contact Us!</h1>
+
+                        <p class="text-gray-300">
+                            Fill up the form below to send us a message.
+                        </p>
+                    </div>
+
+                    <form method="POST" id="contact-form" class="space-y-4">
+
+                        <input
+                            class="shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            type="text" placeholder="Name" name="name" id="name" required />
+
+                        <input
+                            class="shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            type="email" placeholder="Email" name="email" id="email" required />
+                        <input
+                            class="shadow mb-4 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            type="number" placeholder="Mobile number" name="mobile" id="mobile" required />
+
+                        <textarea
+                            class="shadow mb-4 min-h-0 appearance-none border rounded h-64 w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            type="text" placeholder="Type your message here..." name="message" id="message"
+                            style="height: 121px;" required></textarea>
+
+                        <div class="flex justify-between">
+                            <input
+                                class="shadow bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                type="submit" value="Send ➤">
+                            <input
+                                class="shadow bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                type="reset">
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script to Send Data to Backend -->
+    <script>
+        const contactForm = document.getElementById('contact-form');
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                mobile: document.getElementById('mobile').value,
+                message: document.getElementById('message').value
+            };
+
+            try {
+                // Connect to your Backend
+                const response = await fetch('http://localhost:3000/api/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    alert("✅ Message Sent Successfully!");
+                    contactForm.reset();
+                } else {
+                    alert("❌ Failed to send message.");
+                }
+            } catch (error) {
+                console.error(error);
+                alert("⚠️ Error: Is the backend server running?");
+            }
+        });
+    </script>
+</body>
+
+</html>

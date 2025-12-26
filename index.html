@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laptop Galaxy | Best Second-Hand Laptops in Gaya, Bihar</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Laptop Galaxy Gaya: Premium refurbished and second-hand laptops with 3-month warranty. Best deals for students and office users in Gaya, Bihar.">
+    <meta name="keywords"
+        content="second hand laptop in Gaya, refurbished laptop Gaya, laptop shop in Gaya Bihar, cheap laptops Gaya">
+
+    <!-- Tailwind CSS & Google Fonts -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="./assets/css/main.css">
+
+
+</head>
+
+<body class="bg-slate-50 text-slate-900">
+
+    <!-- NAVIGATION -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50 font-sans">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+
+            <!-- LOGO -->
+            <div class="text-2xl font-bold text-blue-800 flex items-center gap-2" id="logo">
+                <i class="fas fa-laptop-code text-blue-600"></i>
+                <a href="index.html" class="hover:text-blue-600 transition">
+                    <span>LAPTOP <span class="text-blue-500">GALAXY</span></span>
+                </a>
+            </div>
+
+            <!-- DESKTOP NAVIGATION (Links + Auth) -->
+            <div class="hidden md:flex items-center space-x-8 font-semibold">
+
+                <!-- Nav Links -->
+                <div class="flex space-x-6">
+                    <a href="#home" class="nav-link text-blue-600 transition hover:text-blue-800">Home</a>
+                    <a href="#inventory" class="nav-link text-slate-600 hover:text-blue-600 transition">Inventory</a>
+                    <a href="#reviews" class="nav-link text-slate-600 hover:text-blue-600 transition">Reviews</a>
+                    <a href="#about" class="nav-link text-slate-600 hover:text-blue-600 transition">About Us</a>
+                    <a href="contact.html" class="nav-link text-slate-600 hover:text-blue-600 transition">Contact</a>
+                </div>
+
+                <!-- DESKTOP AUTH SECTION -->
+                <div class="border-l border-gray-200 pl-6" id="desktop-auth-container">
+
+                    <!-- 1. GUEST STATE: Animated Dropdown -->
+                    <div id="auth-dropdown-guest" class="relative">
+                        <!-- Trigger Button -->
+                        <button onclick="toggleAuthMenu()"
+                            class="flex items-center gap-2 bg-slate-50 text-slate-700 hover:bg-blue-50 hover:text-blue-600 px-4 py-2 rounded-full font-semibold transition-all duration-300 border border-slate-200 hover:border-blue-200">
+                            <i class="fas fa-user-circle text-xl"></i>
+                            <span>Account</span>
+                            <i class="fas fa-chevron-down text-xs transition-transform duration-300"
+                                id="auth-arrow"></i>
+                        </button>
+
+                        <!-- Dropdown Menu (Animated) -->
+                        <div id="auth-menu"
+                            class="absolute right-0 mt-3 w-48 bg-white rounded-xl shadow-2xl border border-gray-100 p-2 
+                               opacity-0 invisible translate-y-2 transition-all duration-300 ease-out z-50 origin-top-right">
+
+                            <!-- Decorative Tip -->
+                            <div
+                                class="absolute -top-2 right-4 w-4 h-4 bg-white transform rotate-45 border-t border-l border-gray-100">
+                            </div>
+
+                            <div class="relative z-10 flex flex-col gap-1">
+                                <button onclick="openAuthModal('login'); toggleAuthMenu()"
+                                    class="flex items-center gap-3 w-full text-left px-4 py-3 rounded-lg hover:bg-blue-50 text-slate-600 hover:text-blue-700 transition font-medium">
+                                    <i class="fas fa-sign-in-alt text-blue-500 w-5"></i> Login
+                                </button>
+
+                                <button onclick="openAuthModal('signup'); toggleAuthMenu()"
+                                    class="flex items-center gap-3 w-full text-left px-4 py-3 rounded-lg hover:bg-blue-50 text-slate-600 hover:text-blue-700 transition font-medium">
+                                    <i class="fas fa-user-plus text-green-500 w-5"></i> Sign Up
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. LOGGED IN STATE (Hidden by default) -->
+                    <div id="user-info-desktop" class="hidden flex items-center gap-4">
+                        <div class="text-right leading-tight">
+                            <span class="block text-xs text-slate-400 font-normal">Welcome,</span>
+                            <span id="user-name-desktop" class="font-bold text-slate-800">User</span>
+                        </div>
+                        <button onclick="logout()" class="text-red-500 hover:bg-red-50 p-2 rounded-full transition"
+                            title="Logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- MOBILE TOGGLE BUTTON -->
+            <button class="md:hidden text-2xl text-slate-700 focus:outline-none"
+                onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- MOBILE MENU (Links + Auth) -->
+        <div id="mobile-menu"
+            class="hidden md:hidden bg-white border-t border-gray-100 px-6 py-4 flex flex-col space-y-4 font-semibold shadow-inner">
+            <a href="#home" class="nav-link text-blue-600" onclick="toggleMobileMenu()">Home</a>
+            <a href="#inventory" class="nav-link text-slate-600" onclick="toggleMobileMenu()">Inventory</a>
+            <a href="#reviews" class="nav-link text-slate-600" onclick="toggleMobileMenu()">Reviews</a>
+            <a href="#about" class="nav-link text-slate-600" onclick="toggleMobileMenu()">About Us</a>
+            <a href="contact.html" class="nav-link text-slate-600" onclick="toggleMobileMenu()">Contact</a>
+
+            <!-- MOBILE AUTH SECTION (Separator) -->
+            <div class="border-t border-gray-100 pt-4 mt-2">
+
+                <!-- Guest State Mobile -->
+                <div id="mobile-auth-guest" class="flex flex-col gap-3">
+                    <button onclick="openAuthModal('login'); toggleMobileMenu()"
+                        class="w-full text-center text-blue-600 border border-blue-600 py-2 rounded-lg hover:bg-blue-50">
+                        Login
+                    </button>
+                    <button onclick="openAuthModal('signup'); toggleMobileMenu()"
+                        class="w-full text-center bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">
+                        Sign Up
+                    </button>
+                </div>
+
+                <!-- Logged In State Mobile -->
+                <div id="mobile-auth-user" class="hidden flex items-center justify-between bg-slate-50 p-3 rounded-lg">
+                    <span class="text-slate-700">Hi, <span id="user-name-mobile" class="font-bold">User</span></span>
+                    <button onclick="logout(); toggleMobileMenu()"
+                        class="text-red-500 text-sm font-bold">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section id="home" class="hero-gradient text-white py-20 md:py-32 px-6">
+        <div class="container mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-extrabold mb-6">Premium Refurbished Laptops in <span
+                    class="text-blue-200">Gaya</span></h1>
+            <p class="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">High-quality, fully tested machines for students,
+                professionals, and budget buyers. Up to 70% off on top brands.</p>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <a href="#inventory"
+                    class="bg-white text-blue-800 px-10 py-4 rounded-full font-bold text-lg shadow-xl hover:bg-blue-50 transition">Browse
+                    Laptops</a>
+                <a href="https://www.google.com/maps/place/Laptop+Galaxy/@24.7980552,85.0210251,17z/data=!3m1!4b1!4m14!1m7!3m6!1s0x39f329da997bd6d9:0x4db4c21acd03c91a!2sLaptop+Galaxy!8m2!3d24.7980552!4d85.0236!16s%2Fg%2F11vx0_md31!3m5!1s0x39f329da997bd6d9:0x4db4c21acd03c91a!8m2!3d24.7980552!4d85.0236!16s%2Fg%2F11vx0_md31?entry=ttu"
+                    target="_blank"
+                    class="border-2 border-white px-10 py-4 rounded-full font-bold text-lg hover:bg-white/10 transition">
+                    Visit Shop
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- TRUST & WARRANTY SECTION -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-10 text-center">
+                <div class="p-8 rounded-2xl bg-slate-50 border border-slate-100 shadow-sm">
+                    <i class="fas fa-shield-alt text-4xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">3-Month Warranty</h3>
+                    <p class="text-slate-600">Peace of mind with every purchase. Full hardware support local to Gaya.
+                    </p>
+                </div>
+                <div class="p-8 rounded-2xl bg-slate-50 border border-slate-100 shadow-sm">
+                    <i class="fas fa-microchip text-4xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">40-Point Testing</h3>
+                    <p class="text-slate-600">Every laptop undergoes rigorous checks for battery, display, and keyboard
+                        performance.</p>
+                </div>
+                <div class="p-8 rounded-2xl bg-slate-50 border border-slate-100 shadow-sm">
+                    <i class="fas fa-certificate text-4xl text-blue-600 mb-4"></i>
+                    <h3 class="text-xl font-bold mb-2">Certified A++ Grade</h3>
+                    <p class="text-slate-600">We only sell laptops with minimal wear and maximum reliability.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCTS / INVENTORY PAGE -->
+    <section id="inventory" class="py-20 bg-slate-50">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Our Inventory</h2>
+                <p class="text-slate-600">Hover over a card to reveal the price. Click details for more info.</p>
+            </div>
+
+            <!-- Grid -->
+            <div id="laptop-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- JS Injects Here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- PRODUCT DETAILS MODAL (Hidden by default) -->
+    <div id="product-modal"
+        class="fixed inset-0 bg-black/60 hidden z-50 flex items-center justify-center backdrop-blur-sm opacity-0 transition-opacity duration-300">
+        <div class="bg-white w-full max-w-2xl mx-4 rounded-xl shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300"
+            id="modal-content">
+            <!-- Modal JS Content Injected Here -->
+        </div>
+    </div>
+
+    <!-- CUSTOMER REVIEWS -->
+    <section id="reviews" class="py-20 bg-white">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-16">Customer Testimonials</h2>
+            <div id="reviews-container" class="grid md:grid-cols-2 gap-8">
+            </div>
+        </div>
+
+        <!-- <div class="text-center mt-12">
+            <button onclick="openReviewForm()"
+                class="bg-blue-600 text-white px-6 py-3 rounded-lg font-bold shadow-lg hover:bg-blue-700 transition">
+                Write a Review
+            </button>
+        </div> -->
+
+        <!-- Simple Review Modal (Add to bottom of page) -->
+        <div id="review-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg w-96">
+                <h3 class="text-xl font-bold mb-4">Submit Review</h3>
+                <textarea id="review-text" class="w-full border p-2 rounded mb-2"
+                    placeholder="Your experience..."></textarea>
+                <select id="review-rating" class="w-full border p-2 rounded mb-4">
+                    <option value="5">5 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="3">3 Stars</option>
+                </select>
+                <button onclick="submitReview()" class="w-full bg-green-600 text-white py-2 rounded">Submit</button>
+                <button onclick="document.getElementById('review-modal').classList.add('hidden')"
+                    class="w-full mt-2 text-gray-500">Cancel</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT US -->
+    <section id="about" class="py-20 bg-blue-900 text-white">
+        <div class="container mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
+            <div class="md:w-1/2">
+                <img src="https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+                    alt="Shop Credibility" class="rounded-3xl shadow-2xl">
+            </div>
+            <div class="md:w-1/2">
+                <h2 class="text-4xl font-bold mb-6">Why Laptop Galaxy?</h2>
+                <p class="text-blue-100 text-lg mb-6">With over 5 years of experience in the Gaya market, we have served
+                    thousands of students from Magadh University and working professionals. We understand that a laptop
+                    is an investment, which is why we specialize only in business-grade machines from Dell, HP, and
+                    Lenovo.</p>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-4"><i class="fas fa-check-circle text-blue-400"></i> Local Service
+                        Center Support</div>
+                    <div class="flex items-center gap-4"><i class="fas fa-check-circle text-blue-400"></i> Original
+                        Chargers with Every Unit</div>
+                    <div class="flex items-center gap-4"><i class="fas fa-check-circle text-blue-400"></i> Best Price in
+                        Bihar Guaranteed</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT US -->
+    <section id="contact" class="py-20 bg-slate-50">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-2 gap-12">
+                <div>
+                    <h2 class="text-4xl font-bold mb-8 text-slate-900">Get In Touch</h2>
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-4">
+                            <i class="fas fa-map-marker-alt text-2xl text-blue-600 mt-1"></i>
+                            <div>
+                                <p class="font-bold">Shop Address</p>
+                                <p class="text-slate-600">Manpur Mufassil More, Beside of Big Mart Mall Gaya, 823003</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <i class="fas fa-phone-alt text-2xl text-blue-600 mt-1"></i>
+                            <div>
+                                <p class="font-bold">Phone Number</p>
+                                <p class="text-slate-600">+91 9162382950 / +91 99999 88888</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <i class="fas fa-envelope text-2xl text-blue-600 mt-1"></i>
+                            <div>
+                                <p class="font-bold">Email</p>
+                                <p class="text-slate-600">sales@laptopgalaxy.com</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rounded-3xl overflow-hidden shadow-2xl h-80">
+                    <!-- Google Maps Placeholder (Replace with actual Embed URL) -->
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3621.408258!2d85.0210251!3d24.7980552!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f329da997bd6d9%3A0x4db4c21acd03c91a!2sLaptop%20Galaxy!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+                        width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-white py-12 border-t">
+        <div class="container mx-auto px-6 text-center">
+            <p class="text-slate-500 font-semibold mb-2">© 2025 Laptop Galaxy Gaya. All Rights Reserved.</p>
+            <p class="text-slate-400 text-sm">Manpur Mufassil More, Beside of Big Mart Mall Gaya, 823003.</p>
+        </div>
+    </footer>
+
+    <!-- FLOATING WHATSAPP BUTTON -->
+    <a href="https://wa.me/919162382950?text=Hi, I am interested in checking your laptop inventory." target="_blank"
+        class="fixed bottom-6 right-6 bg-green-500 text-white w-16 h-16 rounded-full flex items-center justify-center text-3xl shadow-2xl z-50 wa-float hover:scale-110 transition">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+
+    <script src="assets/js/app.js"></script>
+</body>
+
+</html>
