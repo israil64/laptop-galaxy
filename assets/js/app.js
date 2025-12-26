@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', initApp);
    =========================== */
 // Define laptops globally so both renderInventory and openModal can access it
 let laptops = []; 
-const API_BASE = 'http://localhost:3000/api'; // Point to your backend
+const API_BASE = 'https://laptop-galaxy-backend.onrender.com/api'; // Point to your backend
 
 
 
