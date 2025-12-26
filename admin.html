@@ -160,14 +160,13 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        const API_URL = "https://laptop-galaxy.onrender.com";
-        let isEditing = false;
+const API_BASE = "https://laptop-galaxy.onrender.com/api";        let isEditing = false;
 
         // 1. Load Data on Start
         document.addEventListener("DOMContentLoaded", fetchLaptops);
 
         async function fetchLaptops() {
-            const res = await fetch(API_URL);
+            const res = await fetch(`${API_BASE}/laptops`);
             const laptops = await res.json();
             const tbody = document.getElementById("admin-table-body");
 
@@ -226,14 +225,14 @@
 
                 if (isEditing) {
                     // UPDATE Existing
-                    await fetch(`${API_URL}/${id}`, {
+                    await fetch(`${API_BASE}/${id}`, {
                         method: "PUT",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(laptopData),
                     });
                 } else {
                     // CREATE New
-                    await fetch(API_URL, {
+                    await fetch(API_BASE, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(laptopData),
@@ -247,7 +246,7 @@
         // 3. Delete Logic
         async function deleteLaptop(id) {
             if (confirm("Are you sure you want to delete this laptop?")) {
-                await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+                await fetch(`${API_BASE}/${id}`, { method: "DELETE" });
                 fetchLaptops();
             }
         }
@@ -299,7 +298,7 @@
         // --- REVIEWS LOGIC ---
 
         async function fetchReviews() {
-            const res = await fetch('http://localhost:3000/api/reviews');
+            const res = await fetch(`${API_BASE}/reviews`);
             const reviews = await res.json();
             const tbody = document.getElementById('reviews-table-body');
 
@@ -355,7 +354,7 @@
         // Delete Review
         async function deleteReview(id) {
             if (confirm("Permanently delete this review?")) {
-                await fetch(`http://localhost:3000/api/reviews/${id}`, { method: 'DELETE' });
+                await fetch(`${API_BASE}/reviews/${id}`, { method: 'DELETE' });
                 fetchReviews();
             }
         }
@@ -377,7 +376,7 @@
 
         // 2. Fetch Messages
         async function fetchMessages() {
-            const res = await fetch("http://localhost:3000/api/messages");
+            const res = await fetch(`${API_BASE}/messages`);
             const messages = await res.json();
             const tbody = document.getElementById("messages-table-body");
 
