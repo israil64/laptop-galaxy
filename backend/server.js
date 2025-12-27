@@ -1,259 +1,195 @@
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs').promises; // Tool to read files
-const path = require('path');
-const bcrypt = require('bcryptjs'); // Import at the top
+const mongoose = require('mongoose'); 
+const bcrypt = require('bcryptjs');
+require('dotenv').config(); 
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const USERS_FILE = path.join(__dirname, 'data', 'users.json');
+// ==========================================
+// 1. DATABASE CONNECTION (YOUR DB)
+// ==========================================
+// I added "/laptop_db" to the URL so it creates a specific folder for your data
+const MONGO_URI = "mongodb+srv://israilsara786_db_user:UB8Aeini14qEEnHN@cluster0.ziozl2o.mongodb.net/laptop_db?retryWrites=true&w=majority&appName=Cluster0";
 
-// Helper: Read Users
-async function readUsers() {
-    try {
-        const data = await fs.readFile(USERS_FILE, 'utf8');
-        return JSON.parse(data);
-    } catch (err) {
-        return [];
-    }
-}
+mongoose.connect(MONGO_URI)
+    .then(() => console.log("✅ Connected to MongoDB Atlas"))
+    .catch(err => console.error("❌ MongoDB Connection Error:", err));
 
-// --- AUTH ROUTES ---
-
-// 1. SIGNUP
-app.post('/api/signup', async (req, res) => {
-    const { username, email, password } = req.body;
-    const users = await readUsers();
-
-    // Check if user exists
-    if (users.find(u => u.email === email)) {
-        return res.status(400).json({ message: "User already exists" });
-    }
-
-    // Hash the password (encrypt it)
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const newUser = {
-        id: Date.now(),
-        username,
-        email,
-        password: hashedPassword,
-        role: 'user' // Default role
-    };
-
-    users.push(newUser);
-    await fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2));
-
-    res.json({ message: "Signup successful! Please login." });
-});
-
-// 2. LOGIN
-app.post('/api/login', async (req, res) => {
-    const { email, password } = req.body;
-    const users = await readUsers();
-
-    // Find user
-    const user = users.find(u => u.email === email);
-    if (!user) {
-        return res.status(400).json({ message: "User not found" });
-    }
-
-    // Check Password
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-        return res.status(400).json({ message: "Invalid credentials" });
-    }
-
-    // Return User Info (Excluding password)
-    res.json({
-        message: "Login successful",
-        user: { id: user.id, username: user.username, email: user.email }
-    });
-});
-
-// Path to your database file
-const DATA_FILE = path.join(__dirname, 'data', 'inventory.json');
-
-// Middleware (Allows the frontend to talk to this server)
-
+// Middleware
 app.use(cors({
-    origin: '*', // For now, allow ALL to ensure it works. 
-    // (We will lock this to your specific domain later)
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Explicitly allow DELETE
-    allowedHeaders: ['Content-Type','Authorization']
+    origin: '*', 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
-
 app.use(express.json());
 
-// --- HELPER FUNCTIONS (Read & Write Data) ---
-async function readData() {
+// ==========================================
+// 2. DATA MODELS
+// ==========================================
+
+const UserSchema = new mongoose.Schema({
+    username: String,
+    email: { type: String, unique: true, required: true },
+    password: { type: String, required: true },
+    role: { type: String, default: 'user' },
+    createdAt: { type: Date, default: Date.now }
+});
+const User = mongoose.model('User', UserSchema);
+
+const LaptopSchema = new mongoose.Schema({
+    brand: String,
+    model: String,
+    price: Number,
+    originalPrice: Number,
+    status: String, 
+    processor: String,
+    ram: String,
+    storage: String,
+    image: String
+});
+const Laptop = mongoose.model('Laptop', LaptopSchema);
+
+const ReviewSchema = new mongoose.Schema({
+    name: String,
+    role: String,
+    rating: Number,
+    text: String,
+    approved: { type: Boolean, default: false },
+    date: { type: String, default: () => new Date().toLocaleDateString() }
+});
+const Review = mongoose.model('Review', ReviewSchema);
+
+const MessageSchema = new mongoose.Schema({
+    name: String,
+    email: String,
+    message: String,
+    date: { type: String, default: () => new Date().toLocaleDateString() }
+});
+const Message = mongoose.model('Message', MessageSchema);
+
+
+// ==========================================
+// 3. API ROUTES
+// ==========================================
+
+// --- AUTH ---
+app.post('/api/signup', async (req, res) => {
     try {
-        const data = await fs.readFile(DATA_FILE, 'utf8');
-        return JSON.parse(data);
-    } catch (err) {
-        return []; // If file doesn't exist, return empty list
-    }
-}
+        const { username, email, password } = req.body;
+        const existingUser = await User.findOne({ email });
+        if (existingUser) return res.status(400).json({ message: "User already exists" });
 
-async function writeData(data) {
-    await fs.writeFile(DATA_FILE, JSON.stringify(data, null, 2));
-}
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = new User({ username, email, password: hashedPassword });
+        await newUser.save();
+        res.json({ message: "Signup successful" });
+    } catch (e) { res.status(500).json({ message: "Server Error" }); }
+});
 
-// --- ROUTES (The Commands) ---
+app.post('/api/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const user = await User.findOne({ email });
+        if (!user) return res.status(400).json({ message: "User not found" });
 
-// 1. GET: Get all laptops (Used by website & admin)
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+
+        res.json({
+            message: "Login successful",
+            user: { id: user._id, username: user.username, email: user.email, role: user.role }
+        });
+    } catch (e) { res.status(500).json({ message: "Server Error" }); }
+});
+
+// --- INVENTORY ---
 app.get('/api/laptops', async (req, res) => {
-    const laptops = await readData();
-    res.json(laptops);
+    try {
+        const laptops = await Laptop.find();
+        const formatted = laptops.map(l => ({ id: l._id, ...l._doc }));
+        res.json(formatted);
+    } catch (e) { res.status(500).json([]); }
 });
 
-// 2. POST: Add a new laptop
 app.post('/api/laptops', async (req, res) => {
-    const laptops = await readData();
-    const newLaptop = {
-        id: Date.now(), // Creates a unique ID automatically
-        ...req.body
-    };
-    laptops.push(newLaptop);
-    await writeData(laptops);
-    res.json({ message: "Laptop Added!", laptop: newLaptop });
+    try {
+        const newLaptop = new Laptop(req.body);
+        await newLaptop.save();
+        res.json({ message: "Added", laptop: newLaptop });
+    } catch (e) { res.status(500).json({ message: "Error" }); }
 });
 
-// 3. PUT: Edit an existing laptop (Price, Stock, etc)
 app.put('/api/laptops/:id', async (req, res) => {
-    let laptops = await readData();
-    const id = parseInt(req.params.id);
-
-    // Find the laptop and update it
-    const index = laptops.findIndex(l => l.id === id);
-    if (index !== -1) {
-        laptops[index] = { ...laptops[index], ...req.body };
-        await writeData(laptops);
-        res.json({ message: "Laptop Updated!" });
-    } else {
-        res.status(404).json({ message: "Laptop not found" });
-    }
+    try {
+        await Laptop.findByIdAndUpdate(req.params.id, req.body);
+        res.json({ message: "Updated" });
+    } catch (e) { res.status(500).json({ message: "Error" }); }
 });
 
-// 4. DELETE: Remove a laptop
 app.delete('/api/laptops/:id', async (req, res) => {
-    let laptops = await readData();
-    const id = parseInt(req.params.id);
-
-    // Keep only laptops that DO NOT match the ID
-    const newLaptops = laptops.filter(l => l.id !== id);
-    await writeData(newLaptops);
-    res.json({ message: "Laptop Deleted!" });
+    try {
+        await Laptop.findByIdAndDelete(req.params.id);
+        res.json({ message: "Deleted" });
+    } catch (e) { res.status(500).json({ message: "Error" }); }
 });
 
-// ==========================================
-// NEW FEATURE: REVIEWS MANAGEMENT
-// ==========================================
-
-const REVIEW_FILE = path.join(__dirname, 'data', 'reviews.json');
-
-async function readReviews() {
-    try {
-        const data = await fs.readFile(REVIEW_FILE, 'utf8');
-        return JSON.parse(data);
-    } catch (err) {
-        return [];
-    }
-}
-
-// 1. GET: Get all reviews
+// --- REVIEWS ---
 app.get('/api/reviews', async (req, res) => {
-    const reviews = await readReviews();
-    res.json(reviews);
-});
-
-// 2. POST: Add a new review (from Customer)
-app.post('/api/reviews', async (req, res) => {
-    const reviews = await readReviews();
-    const newReview = {
-        id: Date.now(),
-        date: new Date().toLocaleDateString(),
-        approved: false, // By default, reviews are HIDDEN until admin approves
-        ...req.body
-    };
-    reviews.push(newReview);
-    await fs.writeFile(REVIEW_FILE, JSON.stringify(reviews, null, 2));
-    res.json({ message: "Review Submitted! Pending Approval." });
-});
-
-// 3. PUT: Approve/Hide a review (Admin only)
-app.put('/api/reviews/:id', async (req, res) => {
-    const reviews = await readReviews();
-    const id = parseInt(req.params.id);
-    const index = reviews.findIndex(r => r.id === id);
-
-    if (index !== -1) {
-        // Toggle the 'approved' status
-        reviews[index].approved = req.body.approved;
-        await fs.writeFile(REVIEW_FILE, JSON.stringify(reviews, null, 2));
-        res.json({ message: "Review Status Updated" });
-    } else {
-        res.status(404).json({ message: "Review not found" });
-    }
-});
-
-// 4. DELETE: Delete a review
-app.delete('/api/reviews/:id', async (req, res) => {
-    let reviews = await readReviews();
-    const id = parseInt(req.params.id);
-    reviews = reviews.filter(r => r.id !== id);
-    await fs.writeFile(REVIEW_FILE, JSON.stringify(reviews, null, 2));
-    res.json({ message: "Review Deleted" });
-});
-
-
-// Start the Manager
-app.listen(PORT, () => {
-    console.log(`✅ Server running at http://localhost:${PORT}`);
-});
-
-
-// ==========================================
-// NEW FEATURE: CONTACT MESSAGES
-// ==========================================
-
-const MSG_FILE = path.join(__dirname, 'data', 'messages.json');
-
-// Helper: Read Messages
-async function readMessages() {
     try {
-        const data = await fs.readFile(MSG_FILE, 'utf8');
-        return JSON.parse(data);
-    } catch (err) {
-        return [];
-    }
-}
+        const reviews = await Review.find();
+        const formatted = reviews.map(r => ({ id: r._id, ...r._doc }));
+        res.json(formatted);
+    } catch (e) { res.status(500).json([]); }
+});
 
-// 1. POST: Receive a new message from the website
+app.post('/api/reviews', async (req, res) => {
+    try {
+        const newReview = new Review(req.body);
+        await newReview.save();
+        res.json({ message: "Review Submitted" });
+    } catch (e) { res.status(500).json({ message: "Error" }); }
+});
+
+app.put('/api/reviews/:id', async (req, res) => {
+    try {
+        await Review.findByIdAndUpdate(req.params.id, { approved: req.body.approved });
+        res.json({ message: "Status Updated" });
+    } catch (e) { res.status(500).json({ message: "Error" }); }
+});
+
+app.delete('/api/reviews/:id', async (req, res) => {
+    try {
+        await Review.findByIdAndDelete(req.params.id);
+        res.json({ message: "Deleted" });
+    } catch (e) { res.status(500).json({ message: "Error" }); }
+});
+
+// --- MESSAGES ---
 app.post('/api/contact', async (req, res) => {
-    const messages = await readMessages();
-    const newMessage = {
-        id: Date.now(),
-        date: new Date().toLocaleDateString(), // Saves today's date
-        ...req.body // name, email, message
-    };
-    messages.push(newMessage);
-    await fs.writeFile(MSG_FILE, JSON.stringify(messages, null, 2));
-    res.json({ message: "Message Received!" });
+    try {
+        const newMessage = new Message(req.body);
+        await newMessage.save();
+        res.json({ message: "Message Sent" });
+    } catch (e) { res.status(500).json({ message: "Error" }); }
 });
 
-// 2. GET: Show all messages to Admin
 app.get('/api/messages', async (req, res) => {
-    const messages = await readMessages();
-    res.json(messages);
+    try {
+        const messages = await Message.find();
+        const formatted = messages.map(m => ({ id: m._id, ...m._doc }));
+        res.json(formatted);
+    } catch (e) { res.status(500).json([]); }
 });
 
-// 3. DELETE: Delete a message
 app.delete('/api/messages/:id', async (req, res) => {
-    let messages = await readMessages();
-    const id = parseInt(req.params.id);
-    messages = messages.filter(m => m.id !== id);
-    await fs.writeFile(MSG_FILE, JSON.stringify(messages, null, 2));
-    res.json({ message: "Message Deleted" });
+    try {
+        await Message.findByIdAndDelete(req.params.id);
+        res.json({ message: "Deleted" });
+    } catch (e) { res.status(500).json({ message: "Error" }); }
+});
+
+app.listen(PORT, () => {
+    console.log(`✅ Server running on Port ${PORT}`);
 });
