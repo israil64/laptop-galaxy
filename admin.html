@@ -243,14 +243,14 @@
 
                 if (isEditing) {
                     // UPDATE Existing
-                    await fetch(`${API_BASE}/${id}`, {
+                    await fetch(`${API_BASE}/laptops/${id}`, {
                         method: "PUT",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(laptopData),
                     });
                 } else {
                     // CREATE New
-                    await fetch(API_BASE, {
+                    await fetch(`${API_BASE}/laptops`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(laptopData),

@@ -417,3 +417,21 @@ function updateAuthUI() {
 
 // Initial Call
 document.addEventListener('DOMContentLoaded', updateAuthUI);
+
+
+
+/* ===========================
+   AUTO-REFRESH LOGIC (Polling)
+   =========================== */
+// Check for updates every 10 seconds (10000 milliseconds)
+setInterval(() => {
+    // Only fetch if the user is looking at the tab (Saves data)
+    if (!document.hidden) {
+        // We call fetchInventory to get the latest laptops
+        // We pass 'false' to a hypothetical parameter to avoid showing loading spinners every time (optional)
+        fetchInventory();
+        
+        // Also check for new reviews
+        fetchReviews();
+    }
+}, 10000);
