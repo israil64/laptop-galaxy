@@ -21,13 +21,20 @@
                 </button>
                 <button onclick="showSection('messages')"
                     class="w-full text-left py-2 px-4 rounded text-gray-400 hover:bg-slate-700 hover:text-white transition">
-                    Messages
+                    Inquiries
                 </button>
-                
+                <button onclick="showSection('reviews')"
+                    class="w-full text-left py-2 px-4 rounded text-gray-400 hover:bg-slate-700 hover:text-white transition">
+                    Reviews
+                </button>
+                <button onclick="adminLogout()"
+                    class="block w-full text-left py-2 px-4 mt-8 text-red-400 hover:text-red-200 font-bold border-t border-slate-700 pt-4">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
                 <a href="index.html" class="block py-2 px-4 mt-8 text-sm text-gray-500 hover:text-white"><i
                         class="fas fa-arrow-left"></i> Back to Website
                 </a>
-                
+
             </nav>
             <!-- <nav class="space-y-4">
                 <a href="#" class="block py-2 px-4 bg-slate-700 rounded text-blue-300 font-bold">Inventory</a>
@@ -160,7 +167,17 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-const API_BASE = "https://laptop-galaxy.onrender.com/api";        
+        // --- SECURITY CHECK ---
+        // If no token found, kick them back to login page
+        if (localStorage.getItem('adminToken') !== 'LOGGED_IN_TRUE') {
+            window.location.href = 'login.html';
+        }
+
+        function adminLogout() {
+            localStorage.removeItem('adminToken');
+            window.location.href = 'login.html';
+        }
+        const API_BASE = "https://laptop-galaxy.onrender.com/api";
         let isEditing = false;
 
         // 1. Load Data on Start
