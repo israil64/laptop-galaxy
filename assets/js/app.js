@@ -435,3 +435,19 @@ setInterval(() => {
         fetchReviews();
     }
 }, 10000);
+
+
+/* ===========================
+   PRELOADER LOGIC
+   =========================== */
+window.addEventListener('load', () => {
+    const preloader = document.getElementById('preloader');
+    
+    // 1. Fade out effect
+    preloader.classList.add('opacity-0');
+    
+    // 2. Remove from HTML after animation (0.5 seconds)
+    setTimeout(() => {
+        preloader.style.display = 'none';
+    }, 500);
+});
