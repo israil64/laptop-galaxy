@@ -4,49 +4,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login</title>
+    <title>Admin Login - Laptop Galaxy</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Montserrat for that clean look) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #03181b;
+            /* Deep Dark Teal from image */
+        }
+
+        .logo-gradient {
+            background: linear-gradient(135deg, #00C9FF 0%, #92FE9D 100%);
+            /* Placeholder for logo colors */
+            -webkit-background-clip: text;
+            /* -webkit-text-fill-color: transparent; */
+        }
+
+        /* Custom Input Styling to match image */
+        .custom-input {
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+        }
+
+        .custom-input::placeholder {
+            color: #a0a0a0;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1.5px;
+        }
+    </style>
 </head>
 
-<body class="bg-gray-900 h-screen flex items-center justify-center">
+<body class="h-screen w-full flex items-center justify-center text-white overflow-hidden">
 
-    <div class="bg-white p-8 rounded-lg shadow-xl w-96">
-        <h2 class="text-2xl font-bold text-center mb-6 text-gray-800">Admin Access</h2>
+    <div class="container mx-auto px-4 h-full flex flex-col md:flex-row items-center justify-center">
 
-        <form id="admin-login-form" class="space-y-4">
-            <div>
-                <label class="block text-sm font-bold mb-1">Username</label>
-                <input type="text" id="admin-user" class="w-full border p-2 rounded" required>
+        <!-- LEFT SIDE: LOGO -->
+        <div class="w-full md:w-5/12 flex flex-col items-end justify-center pr-0 md:pr-10 mb-10 md:mb-0">
+            <div class="flex items-center gap-4">
+                <!-- Abstract Logo Icon (Mimicking the flame/leaf) -->
+                <div class="relative w-12 h-16">
+                    <div
+                        class="absolute inset-0 bg-gradient-to-tr from-cyan-400 to-teal-300 rounded-tr-3xl rounded-bl-3xl opacity-90">
+                    </div>
+                    <div
+                        class="absolute top-2 left-2 inset-0 bg-gradient-to-tr from-orange-400 to-yellow-300 rounded-tl-3xl rounded-br-3xl opacity-90 mix-blend-overlay">
+                    </div>
+                </div>
+
+                <!-- Brand Name -->
+                <h1 class="text-3xl font-light tracking-wide text-white">Laptop Galaxy</h1>
             </div>
-            <div>
-                <label class="block text-sm font-bold mb-1">Password</label>
-                <input type="password" id="admin-pass" class="w-full border p-2 rounded" required>
+        </div>
+
+        <!-- VERTICAL DIVIDER LINE (Visible on Desktop) -->
+        <div class="hidden md:block w-px h-64 bg-slate-600 opacity-50"></div>
+
+        <!-- RIGHT SIDE: LOGIN FORM -->
+        <div class="w-full md:w-5/12 flex flex-col items-start pl-0 md:pl-10">
+
+            <div class="w-full max-w-sm">
+                <h2 class="text-4xl font-light mb-2 text-center md:text-left tracking-wider">Welcome</h2>
+                <p class="text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-10 text-center md:text-left">
+                    Please login to Admin Dashboard.
+                </p>
+
+                <form id="admin-login-form" class="space-y-5">
+
+                    <!-- Username Input -->
+                    <div>
+                        <input type="text" id="admin-user" placeholder="Username"
+                            class="custom-input w-full bg-white text-gray-800 py-3 px-4 rounded shadow-none border-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                            required>
+                    </div>
+
+                    <!-- Password Input -->
+                    <div>
+                        <input type="password" id="admin-pass" placeholder="Password"
+                            class="custom-input w-full bg-white text-gray-800 py-3 px-4 rounded shadow-none border-none focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                            required>
+                    </div>
+
+                    <!-- Login Button -->
+                    <button type="submit"
+                        class="w-full bg-[#f26522] hover:bg-[#d9531e] text-white text-xs font-bold uppercase tracking-widest py-3 rounded transition-all duration-300 shadow-lg mt-4">
+                        Login
+                    </button>
+
+                </form>
+
+                <!-- Error Message -->
+                <p id="error-msg" class="text-red-500 text-xs text-center mt-4 hidden tracking-wide"></p>
+
+                <!-- Forgot Password -->
+                <div class="text-center mt-6">
+                    <a href="#" class="text-[10px] uppercase tracking-widest text-gray-400 hover:text-white transition">
+                        Forgotten Your Password?
+                    </a>
+                </div>
             </div>
-            <button type="submit" class="w-full bg-blue-600 text-white font-bold py-2 rounded hover:bg-blue-700">
-                Login
-            </button>
-        </form>
-        <p id="error-msg" class="text-red-500 text-center mt-4 hidden text-sm font-bold"></p>
+
+        </div>
+
     </div>
 
+    <!-- JAVASCRIPT LOGIC -->
     <script>
         document.getElementById('admin-login-form').addEventListener('submit', (e) => {
             e.preventDefault();
             const user = document.getElementById('admin-user').value;
             const pass = document.getElementById('admin-pass').value;
 
-            // HARDCODED CREDENTIALS (Simple Security)
-            // Change these to whatever you want!
+            // CREDENTIALS CHECK
+            // Username: admin
+            // Password: laptop123
             if (user === "admin" && pass === "laptop123") {
-                // Save a "Token" to prove we are logged in
+
+                // Show success animation logic could go here
+                document.getElementById('error-msg').classList.add('hidden');
+
+                // Save Security Token
                 localStorage.setItem('adminToken', 'LOGGED_IN_TRUE');
+
+                // Redirect
                 window.location.href = 'admin.html';
             } else {
-                document.getElementById('error-msg').innerText = "Invalid Credentials!";
-                document.getElementById('error-msg').classList.remove('hidden');
+                // Show Error
+                const errorEl = document.getElementById('error-msg');
+                errorEl.innerText = "INVALID USERNAME OR PASSWORD";
+                errorEl.classList.remove('hidden');
             }
         });
     </script>
+
 </body>
 
 </html>
