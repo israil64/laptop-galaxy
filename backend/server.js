@@ -76,7 +76,14 @@ app.post('/api/login', async (req, res) => {
 const DATA_FILE = path.join(__dirname, 'data', 'inventory.json');
 
 // Middleware (Allows the frontend to talk to this server)
-app.use(cors());
+
+app.use(cors({
+    origin: '*', // For now, allow ALL to ensure it works. 
+    // (We will lock this to your specific domain later)
+    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Explicitly allow DELETE
+    allowedHeaders: ['Content-Type']
+}));
+
 app.use(express.json());
 
 // --- HELPER FUNCTIONS (Read & Write Data) ---
