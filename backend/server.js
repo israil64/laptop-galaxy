@@ -64,6 +64,7 @@ const Review = mongoose.model('Review', ReviewSchema);
 const MessageSchema = new mongoose.Schema({
     name: String,
     email: String,
+    mobile: Number,
     message: String,
     date: { type: String, default: () => new Date().toLocaleDateString() }
 });
