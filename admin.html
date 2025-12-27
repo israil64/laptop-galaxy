@@ -263,9 +263,19 @@
 
         // 3. Delete Logic
         async function deleteLaptop(id) {
-            if (confirm("Are you sure you want to delete this laptop?")) {
-                await fetch(`${API_BASE}/${id}`, { method: "DELETE" });
-                fetchLaptops();
+            if (confirm('Are you sure you want to delete this laptop?')) {
+                try {
+                    // MUST use backticks (`) not quotes (')
+                    await fetch(`${API_BASE}/laptops/${id}`, {
+                        method: 'DELETE'
+                    });
+
+                    alert("Deleted Successfully"); // Add this to confirm it worked
+                    fetchLaptops(); // Refresh the list
+                } catch (error) {
+                    console.error(error);
+                    alert("Error deleting item");
+                }
             }
         }
 

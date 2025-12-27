@@ -81,7 +81,7 @@ app.use(cors({
     origin: '*', // For now, allow ALL to ensure it works. 
     // (We will lock this to your specific domain later)
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // Explicitly allow DELETE
-    allowedHeaders: ['Content-Type']
+    allowedHeaders: ['Content-Type','Authorization']
 }));
 
 app.use(express.json());
