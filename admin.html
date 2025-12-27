@@ -168,7 +168,6 @@
     <!-- JAVASCRIPT LOGIC -->
     <script>
         // --- SECURITY CHECK ---
-        // If no token found, kick them back to login page
         if (localStorage.getItem('adminToken') !== 'LOGGED_IN_TRUE') {
             window.location.href = 'login.html';
         }
@@ -177,109 +176,87 @@
             localStorage.removeItem('adminToken');
             window.location.href = 'login.html';
         }
+
+        // ✅ CORRECT API URL
         const API_BASE = "https://laptop-galaxy.onrender.com/api";
         let isEditing = false;
 
         // 1. Load Data on Start
-        document.addEventListener("DOMContentLoaded", fetchLaptops);
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchLaptops();
+            // Default show inventory
+            showSection('inventory');
+        });
 
+        // --- INVENTORY LOGIC ---
         async function fetchLaptops() {
-            const res = await fetch(`${API_BASE}/laptops`);
-            const laptops = await res.json();
-            const tbody = document.getElementById("admin-table-body");
+            try {
+                const res = await fetch(`${API_BASE}/laptops`);
+                const laptops = await res.json();
+                const tbody = document.getElementById("admin-table-body");
 
-            tbody.innerHTML = laptops
-                .map(
-                    (laptop) => `
-                      <tr class="hover:bg-slate-50">
-                          <td class="p-4"><img src="${laptop.image
-                        }" class="w-12 h-12 object-cover rounded"></td>
-                          <td class="p-4 font-bold">${laptop.brand} ${laptop.model
-                        }</td>
-                          <td class="p-4">₹${laptop.price}</td>
-                          <td class="p-4">
-                              <span class="px-2 py-1 rounded text-xs font-bold
-                              ${laptop.status === "in-stock"
-                            ? "bg-green-100 text-green-700"
-                            : laptop.status === "sold"
-                                ? "bg-red-100 text-red-700"
-                                : "bg-orange-100 text-orange-700"
+                tbody.innerHTML = laptops.map((laptop) => {
+                    const laptopString = JSON.stringify(laptop).replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+                    return `
+                  <tr class="hover:bg-slate-50">
+                      <td class="p-4"><img src="${laptop.image}" class="w-12 h-12 object-cover rounded"></td>
+                      <td class="p-4 font-bold">${laptop.brand} ${laptop.model}</td>
+                      <td class="p-4">₹${laptop.price}</td>
+                      <td class="p-4">
+                          <span class="px-2 py-1 rounded text-xs font-bold ${laptop.status === "in-stock" ? "bg-green-100 text-green-700" :
+                            laptop.status === "sold" ? "bg-red-100 text-red-700" : "bg-orange-100 text-orange-700"
                         }">
-                                  ${laptop.status.toUpperCase()}
-                              </span>
-                          </td>
-                          <td class="p-4 text-center space-x-2">
-                              <button onclick='editLaptop(${JSON.stringify(
-                            laptop
-                        )})' class="text-blue-600 hover:text-blue-800"><i class="fas fa-edit"></i></button>
-                              <button onclick="deleteLaptop(${laptop.id
-                        })" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
-                          </td>
-                      </tr>
-                  `
-                )
-                .join("");
+                              ${laptop.status.toUpperCase()}
+                          </span>
+                      </td>
+                      <td class="p-4 text-center space-x-2">
+                          <button onclick='editLaptop(${laptopString})' class="text-blue-600 hover:text-blue-800"><i class="fas fa-edit"></i></button>
+                          <button onclick="deleteLaptop('${laptop.id}')" class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
+                      </td>
+                  </tr>`;
+                }).join("");
+            } catch (e) { console.error("Error fetching laptops", e); }
         }
 
-        // 2. Handle Form Submit (Add or Update)
-        document
-            .getElementById("inventoryForm")
-            .addEventListener("submit", async (e) => {
-                e.preventDefault();
+        // Handle Form Submit
+        document.getElementById("inventoryForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const laptopData = {
+                brand: document.getElementById("brand").value,
+                model: document.getElementById("model").value,
+                price: Number(document.getElementById("price").value),
+                status: document.getElementById("status").value,
+                processor: document.getElementById("specs").value,
+                ram: "See details",
+                storage: "",
+                image: document.getElementById("image").value,
+            };
+            const id = document.getElementById("laptopId").value;
 
-                const laptopData = {
-                    brand: document.getElementById("brand").value,
-                    model: document.getElementById("model").value,
-                    price: Number(document.getElementById("price").value),
-                    status: document.getElementById("status").value,
-                    // Combine specs into simple string or object as preferred. Here simple for beginner:
-                    processor: document.getElementById("specs").value,
-                    ram: "See details", // keeping simple for now
-                    storage: "",
-                    image: document.getElementById("image").value,
-                };
+            if (isEditing) {
+                await fetch(`${API_BASE}/laptops/${id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(laptopData),
+                });
+            } else {
+                await fetch(`${API_BASE}/laptops`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(laptopData),
+                });
+            }
+            closeForm();
+            fetchLaptops();
+        });
 
-                const id = document.getElementById("laptopId").value;
-
-                if (isEditing) {
-                    // UPDATE Existing
-                    await fetch(`${API_BASE}/laptops/${id}`, {
-                        method: "PUT",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(laptopData),
-                    });
-                } else {
-                    // CREATE New
-                    await fetch(`${API_BASE}/laptops`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify(laptopData),
-                    });
-                }
-
-                closeForm();
-                fetchLaptops(); // Refresh table
-            });
-
-        // 3. Delete Logic
         async function deleteLaptop(id) {
-            if (confirm('Are you sure you want to delete this laptop?')) {
-                try {
-                    // MUST use backticks (`) not quotes (')
-                    await fetch(`${API_BASE}/laptops/${id}`, {
-                        method: 'DELETE'
-                    });
-
-                    alert("Deleted Successfully"); // Add this to confirm it worked
-                    fetchLaptops(); // Refresh the list
-                } catch (error) {
-                    console.error(error);
-                    alert("Error deleting item");
-                }
+            if (confirm('Delete this laptop?')) {
+                await fetch(`${API_BASE}/laptops/${id}`, { method: 'DELETE' });
+                fetchLaptops();
             }
         }
 
-        // 4. Helper Functions (Open/Close Modal)
         function openForm() {
             isEditing = false;
             document.getElementById("inventoryForm").reset();
@@ -294,9 +271,8 @@
             document.getElementById("model").value = laptop.model;
             document.getElementById("price").value = laptop.price;
             document.getElementById("status").value = laptop.status;
-            document.getElementById("specs").value = laptop.processor || ""; // Simplified spec loading
+            document.getElementById("specs").value = laptop.processor || "";
             document.getElementById("image").value = laptop.image;
-
             document.getElementById("formTitle").innerText = "Edit Laptop";
             document.getElementById("laptopFormModal").classList.remove("hidden");
         };
@@ -305,9 +281,7 @@
             document.getElementById("laptopFormModal").classList.add("hidden");
         }
 
-        // --- NEW: MESSAGE LOGIC ---
-
-        // 1. Switch Tabs
+        // --- TAB SWITCHING LOGIC ---
         function showSection(sectionId) {
             // Hide all sections
             document.getElementById('inventory-section').classList.add('hidden');
@@ -324,7 +298,6 @@
         }
 
         // --- REVIEWS LOGIC ---
-
         async function fetchReviews() {
             const res = await fetch(`${API_BASE}/reviews`);
             const reviews = await res.json();
@@ -336,114 +309,85 @@
             }
 
             tbody.innerHTML = reviews.map(r => `
-        <tr class="hover:bg-slate-50">
-            <td class="p-4 text-yellow-500 font-bold">${r.rating} <i class="fas fa-star"></i></td>
-            <td class="p-4">
-                <div class="font-bold text-slate-800">${r.name}</div>
-                <div class="text-xs text-slate-500">${r.role || 'Customer'}</div>
-            </td>
-            <td class="p-4 text-sm text-gray-600 max-w-xs">${r.text}</td>
-            <td class="p-4">
-                ${r.approved === true
-                    ? '<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Live</span>'
+            <tr class="hover:bg-slate-50">
+                <td class="p-4 text-yellow-500 font-bold">${r.rating} <i class="fas fa-star"></i></td>
+                <td class="p-4">
+                    <div class="font-bold text-slate-800">${r.name}</div>
+                    <div class="text-xs text-slate-500">${r.role || 'Customer'}</div>
+                </td>
+                <td class="p-4 text-sm text-gray-600 max-w-xs">${r.text}</td>
+                <td class="p-4">
+                    ${r.approved ? '<span class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold">Live</span>'
                     : '<span class="bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs font-bold">Hidden</span>'}
-            </td>
-            <td class="p-4 text-center space-x-2">
-                <!-- Toggle Button -->
-                <button onclick="toggleReviewStatus(${r.id}, ${r.approved})" 
-                        class="px-3 py-1 rounded text-xs font-bold text-white transition 
-                        ${r.approved === true ? 'bg-orange-500 hover:bg-orange-600' : 'bg-green-600 hover:bg-green-700'}">
-                    ${r.approved === true ? 'Hide' : 'Approve'}
-                </button>
-                
-                <!-- Delete Button -->
-                <button onclick="deleteReview(${r.id})" class="text-red-500 hover:text-red-700 p-2">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        </tr>
-    `).join('');
+                </td>
+                <td class="p-4 text-center space-x-2">
+                    <!-- FIX: Added quotes around ID -->
+                    <button onclick="toggleReviewStatus('${r.id}', ${r.approved})" 
+                            class="px-3 py-1 rounded text-xs font-bold text-white transition 
+                            ${r.approved ? 'bg-orange-500' : 'bg-green-600'}">
+                        ${r.approved ? 'Hide' : 'Approve'}
+                    </button>
+                    <!-- FIX: Added quotes around ID -->
+                    <button onclick="deleteReview('${r.id}')" class="text-red-500 hover:text-red-700 p-2">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>`).join('');
         }
 
-        // Toggle: Approve or Hide
         async function toggleReviewStatus(id, currentStatus) {
-            // If it is true, make it false. If false/undefined, make it true.
             const newStatus = !currentStatus;
-
-            await fetch(`http://localhost:3000/api/reviews/${id}`, {
+            // FIX: Replaced localhost with API_BASE
+            await fetch(`${API_BASE}/reviews/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ approved: newStatus })
             });
-
-            fetchReviews(); // Refresh list
+            fetchReviews();
         }
 
-        // Delete Review
         async function deleteReview(id) {
             if (confirm("Permanently delete this review?")) {
+                // FIX: Replaced localhost with API_BASE
                 await fetch(`${API_BASE}/reviews/${id}`, { method: 'DELETE' });
                 fetchReviews();
             }
         }
 
-        // Hide all
-        document.getElementById("inventory-section").classList.add("hidden");
-        document.getElementById("messages-section").classList.add("hidden");
-
-        // Show selected
-        document
-            .getElementById(sectionId + "-section")
-            .classList.remove("hidden");
-
-        // If Messages selected, fetch data
-        if (sectionId === "messages") {
-            fetchMessages();
-        }
-
-
-        // 2. Fetch Messages
+        // --- MESSAGES LOGIC ---
         async function fetchMessages() {
             const res = await fetch(`${API_BASE}/messages`);
             const messages = await res.json();
             const tbody = document.getElementById("messages-table-body");
 
             if (messages.length === 0) {
-                tbody.innerHTML =
-                    '<tr><td colspan="5" class="p-4 text-center text-gray-500">No messages yet.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-gray-500">No messages yet.</td></tr>';
                 return;
             }
 
-            tbody.innerHTML = messages
-                .map(
-                    (msg) => `
+            tbody.innerHTML = messages.map((msg) => `
               <tr class="hover:bg-slate-50">
                   <td class="p-4 text-sm text-gray-500">${msg.date}</td>
                   <td class="p-4 font-bold">${msg.name}</td>
                   <td class="p-4 text-blue-600"><a href="mailto:${msg.email}">${msg.email}</a></td>
-                  <td class="p-4 font-bold">${msg.mobile}</td>
+                  <!-- Check if mobile exists in DB schema, otherwise hidden -->
                   <td class="p-4 text-gray-700">${msg.message}</td>
                   <td class="p-4 text-center">
-                      <button onclick="deleteMessage(${msg.id})" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded hover:bg-red-100">
+                      <!-- FIX: Added quotes around ID -->
+                      <button onclick="deleteMessage('${msg.id}')" class="text-red-500 hover:text-red-700 bg-red-50 p-2 rounded hover:bg-red-100">
                           <i class="fas fa-trash"></i>
                       </button>
                   </td>
-              </tr>
-          `
-                )
-                .join("");
+              </tr>`).join("");
         }
 
-        // 3. Delete Message
         async function deleteMessage(id) {
             if (confirm("Delete this message?")) {
-                await fetch(`http://localhost:3000/api/messages/${id}`, {
-                    method: "DELETE",
-                });
-                fetchMessages(); // Refresh list
+                // FIX: Replaced localhost with API_BASE
+                await fetch(`${API_BASE}/messages/${id}`, { method: "DELETE" });
+                fetchMessages();
             }
         }
-
     </script>
 </body>
 
